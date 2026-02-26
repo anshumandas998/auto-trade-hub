@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price My Ride - Video Page</title>
+    <style>
+        /* Reset Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #000000;
+            color: white;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        /* Header Styling */
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            z-index: 10;
+        }
+
+        /* Logo Styling - Ensures it's in the top-left */
+        .logo img {
+            width: 60px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .logo img:hover {
+            transform: scale(1.1);
+        }
+
+        /* Login Button */
+        .auth-buttons button {
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .auth-buttons button:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
+
+        /* Video Background */
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        video {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(50%);
+        }
+
+        /* Car Image */
+        .car {
+            position: absolute;
+            bottom: 20px;
+        }
+
+        .car img {
+            width: 800px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .car img:hover {
+            transform: scale(1.1);
+        }
+
+        /* Social Media Links */
+        .social-media {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-media a {
+            text-decoration: none;
+        }
+
+        .social-media img {
+            width: 40px;
+            height: 40px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .social-media img:hover {
+            transform: scale(1.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logo img {
+                width: 50px;
+            }
+
+            .auth-buttons button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+
+            .social-media img {
+                width: 30px;
+                height: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header with Logo & Login Button -->
+    <header>
+        <div class="logo">
+            <img src="erasebg-transformed.png" alt="Price My Ride Logo">
+        </div>
+
+        <div class="auth-buttons">
+            <button onclick="location.href='login.html'">Login</button>
+        </div>
+    </header>
+
+    <h1>PRICE MY RIDE</h1>
+
+    <div class="container">
+        <video autoplay loop muted>
+            <source src="your-video.mp4" type="video/mp4">
+        </video>
+
+        <div class="car">
+            <img src="GoldEssence-0-1.webp" alt="Car Image">
+        </div>
+
+        <!-- Social Media Links -->
+        <div class="social-media">
+            <a href="https://www.instagram.com" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram">
+            </a>
+            <a href="https://www.facebook.com" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook">
+            </a>
+            <a href="https://twitter.com" target="_blank">
+                <img src="data:image/png;base64,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" alt="Twitter">
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

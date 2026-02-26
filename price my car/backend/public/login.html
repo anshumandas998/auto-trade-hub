@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffffff;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            text-align: center;
+            width: 300px;
+        }
+        .input-container {
+            position: relative;
+            width: 90%;
+            margin: 10px auto;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .eye-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        button {
+            padding: 10px;
+            background: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: darkblue;
+        }
+        #message {
+            color: red;
+            font-size: 14px;
+        }
+        .toggle {
+            color: blue;
+            cursor: pointer;
+        }
+        .logo {
+            margin: 20px 0;
+            position: absolute;
+            top: 0px;
+            left: 1px;
+        }
+        .logo img {
+            width: 60px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .logo img:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img src="erasebg-transformed.png" alt="Price My Ride Logo">
+    </div>
+    <div class="container">
+        <h2 id="form-title">Login</h2>
+        <input type="email" id="email" placeholder="Email" required>
+        <div class="input-container">
+            <input type="password" id="password" placeholder="Password" required>
+            <span class="eye-icon" onclick="togglePassword()">👁️</span>
+        </div>
+        <button id="submit-btn" onclick="submitForm()">Login</button>
+        <p id="message"></p>
+        <p>
+            <span id="toggle-text">Don't have an account?</span> 
+            <span class="toggle" onclick="toggleForm()">Register</span>
+        </p>
+    </div>
+
+    <script>
+        let isLogin = true;
+
+        function toggleForm() {
+            isLogin = !isLogin;
+            document.getElementById('form-title').textContent = isLogin ? 'Login' : 'Register';
+            document.getElementById('submit-btn').textContent = isLogin ? 'Login' : 'Register';
+            document.getElementById('toggle-text').textContent = isLogin ? "Don't have an account?" : "Already have an account?";
+        }
+
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
+        }
+
+        async function submitForm() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const messageElement = document.getElementById('message');
+
+            if (!email || !password) {
+                messageElement.textContent = 'Please enter email and password';
+                return;
+            }
+
+            const url = isLogin ? '/login' : '/register';
+            const successMessage = isLogin ? 'Login successful!' : 'Registration successful! Please login.';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    messageElement.textContent = successMessage;
+                    messageElement.style.color = 'green';
+                    
+                    if (isLogin) {
+                        localStorage.setItem('token', data.token);
+                        setTimeout(() => {
+                            window.location.href = '/dashboard'; // Redirect to dashboard
+                        }, 1000);
+                    } else {
+                        toggleForm(); // Switch to login after registration
+                    }
+                } else {
+                    messageElement.textContent = data.message;
+                    messageElement.style.color = 'red';
+                }
+            } catch (error) {
+                messageElement.textContent = 'Error connecting to server';
+                messageElement.style.color = 'red';
+                console.error('Fetch error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

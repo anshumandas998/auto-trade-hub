@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { display: flex; height: 100vh; }
+    .sidebar { width: 25%; background-color: #003153; color: white; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+    .sidebar .item { margin: 10px 0; padding: 10px 20px; background-color: #00509E; border-radius: 5px; text-align: center; width: 100%; cursor: pointer; transition: 0.3s; }
+    .sidebar .item:hover { background-color: #002244; }
+    .main-content { flex-grow: 1; background-color: white; padding: 20px; display: flex; flex-direction: column; }
+    .header { display: flex; justify-content: space-between; align-items: center; padding: 10px; background-color: #f5f5f5; border-bottom: 1px solid #ddd; }
+    .content { margin-top: 20px; }
+    .car-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f0f0f0; margin: 5px 0; border-radius: 4px; }
+    .sell-btn, .book-btn, .pay-btn { border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-left: 10px; }
+    .sell-btn { background: #ffc107; color: black; }
+    .book-btn { background: #28a745; color: white; }
+    .pay-btn { background: #007bff; color: white; }
+    .sell-btn:hover { background: #e0a800; }
+    .book-btn:hover { background: #218838; }
+    .pay-btn:hover { background: #0056b3; }
+    .qr-code { margin-top: 10px; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="item" onclick="loadPage('available-cars')">Cars Available</div>
+    <div class="item" onclick="loadPage('sell-car')">Car for Sell</div>
+    <div class="item" onclick="loadPage('booking-sell')">Booking Car for Sell</div>
+    <div class="item" onclick="loadPage('payment')">Payment Process</div>
+    <div class="item" onclick="loadPage('sell-records')">Car Sell Record</div>
+  </div>
+
+  <div class="main-content">
+    <div class="header">
+      <h2 id="username">Welcome</h2>
+      <div class="user-options">
+        <button onclick="logout()">Logout</button>
+      </div>
+    </div>
+    <div class="content" id="content">
+      <h1>Welcome to the Dashboard</h1>
+      <p>Select an option from the sidebar.</p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!localStorage.getItem("token")) {
+        window.location.href = "login.html";
+      }
+      loadUserInfo();
+    });
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    }
+
+    function loadUserInfo() {
+      document.getElementById("username").innerText = "Welcome, User";
+    }
+
+    function loadPage(page) {
+      let content = document.getElementById("content");
+
+      if (page === "available-cars") {
+        content.innerHTML = `
+          <h1>Available Cars</h1>
+          <button onclick="addCar()" style="background: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;">
+            Add Car
+          </button>
+          <ul id="carList"></ul>
+        `;
+        displayCars();
+      } else if (page === "sell-car") {
+        content.innerHTML = `<h1>Cars for Sell</h1><ul id="sellCarList"></ul>`;
+        displaySellCars();
+      } else if (page === "booking-sell") {
+        content.innerHTML = `<h1>Booked Cars</h1><ul id="bookedCarList"></ul>`;
+        displayBookedCars();
+      } else if (page === "payment") {
+        content.innerHTML = `<h1>Payment Process</h1><ul id="paymentList"></ul>`;
+        displayPayments();
+      } else if (page === "sell-records") {
+        content.innerHTML = `
+          <h1>Car Sell Record</h1>
+          <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+            <div style="flex: 1; padding: 20px; background-color: #e3f2fd; border-radius: 8px;">
+              <h3>Total Cars Added</h3>
+              <p id="totalAddedCars"></p>
+              <p id="totalAddedPrice"></p>
+            </div>
+            <div style="flex: 1; padding: 20px; background-color: #c8e6c9; border-radius: 8px;">
+              <h3>Total Cars Sold</h3>
+              <p id="totalSoldCars"></p>
+              <p id="totalSoldPrice"></p>
+            </div>
+            <div style="flex: 1; padding: 20px; background-color: #fff3cd; border-radius: 8px;">
+              <h3>Total Profit</h3>
+              <p id="totalProfit"></p>
+            </div>
+          </div>
+        `;
+        displaySellRecords();
+      } else {
+        content.innerHTML = `<h1>Loading ${page.replace("-", " ")}...</h1>`;
+      }
+    }
+
+    function addCar() {
+      let brand = prompt("Enter car brand:");
+      if (!brand) return;
+
+      let model = prompt("Enter car model:");
+      if (!model) return;
+
+      let price = prompt("Enter car price in ₹:");
+      if (!price || isNaN(price)) return alert("Please enter a valid price!");
+
+      let cars = JSON.parse(localStorage.getItem("availableCars")) || [];
+      cars.push({ brand, model, price });
+      localStorage.setItem("availableCars", JSON.stringify(cars));
+
+      displayCars();
+    }
+
+    function displayCars() {
+      let cars = JSON.parse(localStorage.getItem("availableCars")) || [];
+      let carList = document.getElementById("carList");
+      carList.innerHTML = cars.map((car, index) => `
+        <li class="car-item">
+          <span><strong>${car.brand} ${car.model}</strong> - ₹${car.price}</span>
+          <button class="sell-btn" onclick="moveToSell(${index})">Move to Sell</button>
+        </li>
+      `).join("");
+    }
+
+    function moveToSell(index) {
+      let cars = JSON.parse(localStorage.getItem("availableCars")) || [];
+      let sellCars = JSON.parse(localStorage.getItem("sellCars")) || [];
+
+      let car = cars[index];
+      let sellingPrice = prompt(`Enter selling price for ${car.brand} ${car.model} (₹):`, car.price);
+      if (!sellingPrice || isNaN(sellingPrice)) return alert("Please enter a valid selling price!");
+
+      car.originalPrice = Number(car.price);
+      car.sellingPrice = Number(sellingPrice);
+
+      sellCars.push(car);
+      localStorage.setItem("sellCars", JSON.stringify(sellCars));
+
+      cars.splice(index, 1);
+      localStorage.setItem("availableCars", JSON.stringify(cars));
+
+      displayCars();
+      displaySellCars();
+    }
+
+    function displaySellCars() {
+      let sellCars = JSON.parse(localStorage.getItem("sellCars")) || [];
+      let sellCarList = document.getElementById("sellCarList");
+      sellCarList.innerHTML = sellCars.map((car, index) => `
+        <li class="car-item">
+          <span><strong>${car.brand} ${car.model}</strong> - ₹${car.sellingPrice || car.price}</span>
+          <button class="book-btn" onclick="bookCar(${index})">Book</button>
+        </li>
+      `).join("");
+    }
+
+    function bookCar(index) {
+      let sellCars = JSON.parse(localStorage.getItem("sellCars")) || [];
+      let bookedCars = JSON.parse(localStorage.getItem("bookedCars")) || [];
+
+      bookedCars.push(sellCars[index]);
+      localStorage.setItem("bookedCars", JSON.stringify(bookedCars));
+
+      sellCars.splice(index, 1);
+      localStorage.setItem("sellCars", JSON.stringify(sellCars));
+
+      displaySellCars();
+      displayBookedCars();
+    }
+
+    function displayBookedCars() {
+      let bookedCars = JSON.parse(localStorage.getItem("bookedCars")) || [];
+      let bookedCarList = document.getElementById("bookedCarList");
+      bookedCarList.innerHTML = bookedCars.map((car, index) => `
+        <li class="car-item">
+          <span><strong>${car.brand} ${car.model}</strong> - ₹${car.sellingPrice || car.price}</span>
+          <button class="pay-btn" onclick="processPayment(${index})">Make Payment</button>
+        </li>
+      `).join("");
+    }
+
+    function processPayment(index) {
+      let bookedCars = JSON.parse(localStorage.getItem("bookedCars")) || [];
+      let payments = JSON.parse(localStorage.getItem("payments")) || [];
+
+      let car = bookedCars[index];
+      payments.push(car);
+      localStorage.setItem("payments", JSON.stringify(payments));
+
+      bookedCars.splice(index, 1);
+      localStorage.setItem("bookedCars", JSON.stringify(bookedCars));
+
+      displayBookedCars();
+      displayPayments();
+    }
+
+    function displayPayments() {
+      let payments = JSON.parse(localStorage.getItem("payments")) || [];
+      let paymentList = document.getElementById("paymentList");
+      paymentList.innerHTML = payments.map(car => `
+        <li class="car-item">
+          <span><strong>${car.brand} ${car.model}</strong> - ₹${car.sellingPrice || car.price}</span>
+          <canvas id="qr-${car.brand}-${car.model}"></canvas>
+        </li>
+      `).join("");
+
+      payments.forEach(car => {
+        new QRious({
+          element: document.getElementById(`qr-${car.brand}-${car.model}`),
+          value: `Pay ₹${car.sellingPrice || car.price} for ${car.brand} ${car.model}`
+        });
+      });
+    }
+    function displaySellRecords() {
+      const availableCars = JSON.parse(localStorage.getItem("availableCars")) || [];
+      const payments = JSON.parse(localStorage.getItem("payments")) || [];
+    
+      // Total added cars are only the available ones
+      const totalAddedCars = availableCars.length;
+      const totalAddedPrice = availableCars.reduce(
+        (sum, car) => sum + Number(car.originalPrice || car.price),
+        0
+      );
+    
+      const totalSoldCars = payments.length;
+      const totalSoldPrice = payments.reduce(
+        (sum, car) => sum + Number(car.sellingPrice || car.price),
+        0
+      );
+    
+      // Profit = (Selling Price - Original Price) of sold cars
+      const totalProfit = payments.reduce((sum, car) => {
+        const sell = Number(car.sellingPrice || car.price);
+        const orig = Number(car.originalPrice || car.price);
+        return sum + (sell - orig);
+      }, 0);
+    
+      // Update DOM
+      document.getElementById("totalAddedCars").innerText = `Count: ${totalAddedCars}`;
+      document.getElementById("totalAddedPrice").innerText = `Total Price: ₹${totalAddedPrice}`;
+    
+      document.getElementById("totalSoldCars").innerText = `Count: ${totalSoldCars}`;
+      document.getElementById("totalSoldPrice").innerText = `Total Price: ₹${totalSoldPrice}`;
+    
+      document.getElementById("totalProfit").innerText = `₹${totalProfit}`;
+    }
+    
+  </script>
+</body>
+</html>
