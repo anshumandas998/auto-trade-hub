@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Price My Ride - Video Page</title>
+    <title>Price My Ride - Premium Car Valuation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Reset Styles */
+        /* Reset & Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -16,7 +18,6 @@
             font-family: 'Poppins', sans-serif;
             background-color: #000000;
             color: white;
-            text-align: center;
             overflow-x: hidden;
         }
 
@@ -29,136 +30,512 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
-            z-index: 10;
+            padding: 20px 50px;
+            z-index: 100;
+            animation: slideDown 0.8s ease-out;
         }
 
-        /* Logo Styling - Ensures it's in the top-left */
-        .logo img {
-            width: 60px;
-            transition: transform 0.3s ease-in-out;
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-100px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .logo img:hover {
-            transform: scale(1.1);
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        /* Login Button */
-        .auth-buttons button {
-            padding: 12px 25px;
-            font-size: 16px;
-            font-weight: bold;
-            background-color: #007BFF;
+        /* Modern CSS Logo */
+        .logo-img {
+            width: 55px;
+            height: 55px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-img::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo-img:hover::before {
+            opacity: 1;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.1) rotate(3deg);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.6);
+        }
+
+        .logo-img i {
+            font-size: 28px;
             color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .logo-text {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #667eea);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 4s ease infinite;
+            letter-spacing: 1px;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .logo-sub {
+            font-size: 10px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: -5px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .login-btn {
+            padding: 12px 30px;
+            font-size: 15px;
+            font-weight: 600;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
         }
 
-        .auth-buttons button:hover {
-            background-color: #0056b3;
-            transform: scale(1.1);
+        .login-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
         }
 
-        /* Video Background */
-        .container {
+        .signup-btn {
+            padding: 12px 35px;
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            letter-spacing: 0.5px;
+        }
+
+        .signup-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.6s;
+        }
+
+        .signup-btn:hover::before {
+            left: 100%;
+        }
+
+        .signup-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Hero Section */
+        .hero {
             position: relative;
             width: 100%;
             height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            text-align: center;
             overflow: hidden;
         }
 
-        video {
+        /* Animated Background */
+        .hero-bg {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            background: 
+                radial-gradient(ellipse at 20% 80%, rgba(0, 123, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(0, 212, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 0, 128, 0.1) 0%, transparent 50%);
             z-index: -1;
-            filter: brightness(50%);
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            animation: float 15s linear infinite;
+            border-radius: 50%;
+        }
+
+        .particle:nth-child(1){ left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2){ left: 20%; animation-delay: 2s; }
+        .particle:nth-child(3){ left: 30%; animation-delay: 4s; }
+        .particle:nth-child(4){ left: 40%; animation-delay: 1s; }
+        .particle:nth-child(5){ left: 50%; animation-delay: 3s; }
+        .particle:nth-child(6){ left: 60%; animation-delay: 5s; }
+        .particle:nth-child(7){ left: 70%; animation-delay: 2.5s; }
+        .particle:nth-child(8){ left: 80%; animation-delay: 1.5s; }
+        .particle:nth-child(9){ left: 90%; animation-delay: 3.5s; }
+        .particle:nth-child(10){ left: 15%; animation-delay: 4.5s; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Main Title */
+        .hero h1 {
+            font-size: 80px;
+            font-weight: 800;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #00d4ff 50%, #007BFF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite alternate, fadeInUp 1s ease-out 0.3s both;
+            text-shadow: 0 0 50px rgba(0, 212, 255, 0.5);
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5)); }
+            to { filter: drop-shadow(0 0 40px rgba(0, 212, 255, 0.8)); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out 0.5s both;
         }
 
         /* Car Image */
         .car {
             position: absolute;
-            bottom: 20px;
+            bottom: 50px;
+            animation: fadeInUp 1s ease-out 0.7s both;
         }
 
         .car img {
-            width: 800px;
-            transition: transform 0.3s ease-in-out;
+            width: 700px;
+            max-width: 90vw;
+            filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.5));
+            transition: all 0.5s ease;
+            animation: carFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes carFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
         .car img:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
+        }
+
+        /* Features Section */
+        .features {
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 50px;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
+        .feature {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .feature i {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: #00d4ff;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover i {
+            transform: scale(1.2);
+            color: #007BFF;
+        }
+
+        .feature p {
+            font-size: 14px;
+            margin: 0;
         }
 
         /* Social Media Links */
         .social-media {
             position: absolute;
-            bottom: 20px;
-            left: 20px;
+            bottom: 30px;
+            left: 50px;
             display: flex;
-            gap: 15px;
+            gap: 20px;
+            animation: fadeIn 1s ease-out 1.1s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .social-media a {
             text-decoration: none;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .social-media a:hover {
+            background: #007BFF;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.4);
         }
 
         .social-media img {
-            width: 40px;
-            height: 40px;
-            transition: transform 0.3s ease-in-out;
+            width: 20px;
+            height: 20px;
+            filter: brightness(0) invert(1);
         }
 
-        .social-media img:hover {
-            transform: scale(1.2);
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            right: 50px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .scroll-indicator span {
+            display: block;
+            width: 20px;
+            height: 35px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .scroll-indicator span::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: scroll 2s infinite;
+        }
+
+        @keyframes scroll {
+            0% { opacity: 1; top: 6px; }
+            100% { opacity: 0; top: 20px; }
+        }
+
+        /* Video Background (hidden, for future use) */
+        .video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            display: none;
+        }
+
+        .video-bg video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(30%);
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
             .logo img {
-                width: 50px;
+                width: 45px;
+                height: 45px;
+            }
+
+            .logo-text {
+                font-size: 18px;
             }
 
             .auth-buttons button {
-                font-size: 14px;
                 padding: 10px 20px;
+                font-size: 13px;
             }
 
-            .social-media img {
-                width: 30px;
-                height: 30px;
+            .hero h1 {
+                font-size: 40px;
+                letter-spacing: 2px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .car img {
+                width: 90%;
+            }
+
+            .features {
+                gap: 20px;
+                bottom: 120px;
+            }
+
+            .feature i {
+                font-size: 24px;
+            }
+
+            .social-media {
+                left: 20px;
+            }
+
+            .scroll-indicator {
+                right: 20px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header with Logo & Login Button -->
-    <header>
-        <div class="logo">
-            <img src="erasebg-transformed.png" alt="Price My Ride Logo">
-        </div>
-
-        <div class="auth-buttons">
-            <button onclick="location.href='login.html'">Login</button>
-        </div>
-    </header>
-
-    <h1>PRICE MY RIDE</h1>
-
-    <div class="container">
+    <!-- Background Video (optional) -->
+    <div class="video-bg">
         <video autoplay loop muted>
             <source src="your-video.mp4" type="video/mp4">
         </video>
+    </div>
 
-        <div class="car">
-            <img src="GoldEssence-0-1.webp" alt="Car Image">
+    <!-- Animated Particles -->
+    <ul class="particles">
+        <li></li><li></li><li></li><li></li><li></li>
+        <li></li><li></li><li></li><li></li><li></li>
+    </ul>
+
+    <!-- Hero Background -->
+    <div class="hero-bg"></div>
+
+    <!-- Header with Logo & Login Button -->
+    <header>
+        <div class="logo">
+            <div class="logo-img">
+                <i class="fas fa-car"></i>
+            </div>
+            <div>
+                <span class="logo-text">Price My Ride</span>
+                <div class="logo-sub">Premium Valuation</div>
+            </div>
+        </div>
+
+        <div class="auth-buttons">
+            <button class="login-btn" onclick="location.href='login.html'">Login</button>
+            <button class="signup-btn" onclick="location.href='login.html'">Get Started</button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>PRICE MY RIDE</h1>
+        <p>Discover the true value of your car with our advanced AI-powered valuation system</p>
+
+        <!-- Features -->
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-car"></i>
+                <p>Instant Valuation</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-chart-line"></i>
+                <p>Market Analysis</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-shield-alt"></i>
+                <p>Secure & Private</p>
+            </div>
         </div>
 
         <!-- Social Media Links -->
@@ -170,10 +547,16 @@
                 <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook">
             </a>
             <a href="https://twitter.com" target="_blank">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAh1BMVEUAAAD////8/PwEBAT09PQ0NDTMzMzb29vV1dX5+fnq6urx8fHg4ODa2trl5eVqampwcHCVlZXCwsKlpaV2dnaxsbGbm5u3t7cxMTFAQEDExMRJSUlgYGBra2uIiIirq6sfHx9+fn5SUlIkJCQXFxdNTU1FRUWDg4MREREqKipcXFw6OjoaGhq8j4kAAAAKeklEQVR4nO2diXbjKgxADbhpnK1t2mm6J+maLv//fWOwJWFwE2+N8Tm686bzZpzYKAJJCEGiiGEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmGYsFFVXqIqvKrewzq6YYVHVmq76qZB1sM6umOVh3b6sqPcpS6r0WHGjx097GuMt7zo6JaHeRMViH9aP0f30He642zTvulVeRJSHhTxrvVj9BCcCvOk9Edye8wuOxPikIhSdNFP5/lz0p/30TFH5WuVfiraP2eUi5cKeNb+brW4OqjDlNMWD1DaN/zLu4NMxHVnTa/KqIoSn5rfX1uZLfR3IVadBRBVnx+9xFVEvG3zkDOwZ9JYrSN7RmX109HYgXrwaYuGPcNNpFh02fTqLMGe/nOvPJESrxuL+DrBPhrftG1rE1T0GkMTbDNnhsscrkjx1lTCUxRQturrzVHRAzjjpPDvqYy7JLeBQkwa3n4OXVQe3U9YrLSWtJRjty9u4YoQlw1ujH5Cf35NbtAZ08wZC/HhXlnBFSm+Gtx4SwKuO2hnQ0xYDFbzpHgp2k3Q2Eyj2tbmnEzVsrsG1ycV8RJELIYvSjszHEerujd+JgGbDuPumIAYOqoqaGpNzTyrp8PNREAPjzddNrYRt6ipLzeumqGENds5E2ClkpPDr/5zrrE/7RxN4TxZ1htMJiSSufJD4BQEKRo9lYU2+TDdVr/fOrfC6e/jZS328pmAppwZr9LagJjgu2IKUntSCLd7dYSADmAuQFHxrngp2oDFkGJU0WNckR9d9pVoK2CaMAIl2pkZpYU/hxyETKeKVZr7TAmgRRQde074K5sY2uXNeJfY4ix83tdilfkJiBN2e156ZLK5uBEkcac5r1PsdPPDyXI1Q53LzxC6KDH6NbR5AHMqtWU8oEKcOkvxEE4XzcCpYsH+6TauMhFTrYhD+U7wE1l3D0tAiELzrGaBBQ6tPbkIZdxnbnhlKI6wwApsphcqf6OEfrqDoLxPEoqfcFmAiM5MQlFcJ/To+o13geH2LApSwgeQ0BFDWXGdmJQ13CwLvsY41Vwcb52wBuk4WoMOYuW4hZcE1x5WvnZMaJAn1tLwTsTfx2x4dRTOlkoitC2uH4nz8veOBfjBQOYTpcDMXKZiOKZ+ie2flr51DSG6FFdBjsGcSzAW4sW5spviUCxbVbRsUYh+AjAmJY9Cx8Uryl6C2Hq+fEtdtP2q6l+iohMMSi6cK1Y/lDunH75hqKZj14DRrX7CSf1z4YrS/hKsTVHBZmaSX5mFPAZzcFVx5l55A2vqzLEUrdIlPa1P1OIGFyzWrjouSBJ7jjWGfw3aT1ig1dAuo3iJsovWcFuRGS1zlSGyhN7oez7SFi7Kr2kx9SK0+dJv0Or3nWs3zmGqKOR7Js4HaXDUT3ObcI75tQ9XK5CySvRUMb1m1VaNf7lbkKzQve0cEdUUXbtOH38nKKBnesNmkgko3ToFlacCTFjwHP1QKDcIP2HxgKGNV+azwpBgSn5CTymHYWQMOoBZY5b01rkGWRud7hD4v+dHLI7tAN3UCQRiXtbmmTKiBU0PxFMg9+j5vFX4S/CX+MeA/IQFhWjOEFM0xcplrLpmExqYfXLWf1V0Y1c1msTa0Hpoxi0KUcguamGsQCYV8XuYGoyotk1nXhwZ7kjA5Ln83YNgjBPbjTPSfiiWCWKZtymf6O7GrhIfSYeBLaLV4wr76Yv+o7PC+MHsY5J6QzMHEPkmYWiucJvNwub4GSQy7KQrfUyQyZnzzGr/h6ft3Mu/W7Hj3dvLFL7g+1Me2jt9HpsaE8ecVf3flgNLut+Ds93mlcfW6AyrGZDKMoDCMoDCMoDCMoDCMoDCMoDCMoDCMoDCMoDCMoDCMoDCMoDCMoDCMoDCMoDCMoDCMoDCMoDCMoDD1X+AzAhn6uwP2V4AAAAASUVORK5CYII=" alt="Twitter">
+                <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter">
             </a>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <span></span>
         </div>
     </div>
 
 </body>
 </html>
+

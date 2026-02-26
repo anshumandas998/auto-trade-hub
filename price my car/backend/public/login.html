@@ -3,97 +3,422 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Register</title>
+    <title>Login - Price My Ride</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #ffffff;
-        }
-        .container {
-            background: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            text-align: center;
-            width: 300px;
-        }
-        .input-container {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            overflow: hidden;
             position: relative;
-            width: 90%;
-            margin: 10px auto;
         }
-        input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .eye-icon {
+
+        /* Animated background particles */
+        .particles {
             position: absolute;
-            right: 10px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            animation: animate 25s linear infinite;
+            bottom: -150px;
+            border-radius: 50%;
+        }
+
+        .particle:nth-child(1){ left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+        .particle:nth-child(2){ left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
+        .particle:nth-child(3){ left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+        .particle:nth-child(4){ left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+        .particle:nth-child(5){ left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+        .particle:nth-child(6){ left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
+        .particle:nth-child(7){ left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
+        .particle:nth-child(8){ left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
+        .particle:nth-child(9){ left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
+        .particle:nth-child(10){ left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
+
+        @keyframes animate {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 50%; }
+            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 400px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideIn 0.8s ease-out;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Modern CSS Logo */
+        .logo-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.5);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-img::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo-img:hover::before {
+            opacity: 1;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.7);
+        }
+
+        .logo-img i {
+            font-size: 40px;
+            color: white;
+            text-shadow: 0 2px 15px rgba(0,0,0,0.2);
+        }
+
+        .logo h2 {
+            margin-top: 15px;
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 3s ease infinite;
+            letter-spacing: 1px;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        h2#form-title {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+            animation: slideIn 0.5s ease-out 0.2s both;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            padding-left: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            outline: none;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .input-group input:focus {
+            border-color: #007BFF;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
+        }
+
+        .input-group .input-icon {
+            position: absolute;
+            left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 18px;
+            transition: all 0.3s ease;
         }
-        button {
-            padding: 10px;
-            background: blue;
-            color: white;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            border-radius: 4px;
+
+        .input-group input:focus ~ .input-icon {
+            color: #007BFF;
         }
-        button:hover {
-            background: darkblue;
-        }
-        #message {
-            color: red;
-            font-size: 14px;
-        }
-        .toggle {
-            color: blue;
-            cursor: pointer;
-        }
-        .logo {
-            margin: 20px 0;
+
+        .password-toggle {
             position: absolute;
-            top: 0px;
-            left: 1px;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .logo img {
-            width: 60px;
-            transition: transform 0.3s ease-in-out;
+
+        .password-toggle:hover {
+            color: #007BFF;
         }
-        .logo img:hover {
-            transform: scale(1.1);
+
+        button#submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #007BFF 0%, #00d4ff 100%);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: slideIn 0.5s ease-out 0.4s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button#submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        button#submit-btn:hover::before {
+            left: 100%;
+        }
+
+        button#submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 123, 255, 0.4);
+        }
+
+        button#submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            min-height: 20px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .toggle-text {
+            text-align: center;
+            margin-top: 25px;
+            color: rgba(255, 255, 255, 0.7);
+            animation: fadeIn 0.5s ease-out 0.5s both;
+        }
+
+        .toggle-text span.toggle {
+            color: #00d4ff;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .toggle-text span.toggle::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00d4ff;
+            transition: width 0.3s ease;
+        }
+
+        .toggle-text span.toggle:hover::after {
+            width: 100%;
+        }
+
+        .toggle-text span.toggle:hover {
+            color: #007BFF;
+        }
+
+        /* Floating shapes */
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            top: 10%;
+            left: 10%;
+            width: 100px;
+            height: 100px;
+            background: #007BFF;
+            border-radius: 50%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            top: 60%;
+            right: 10%;
+            width: 150px;
+            height: 150px;
+            background: #00d4ff;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation-delay: 2s;
+        }
+
+        .shape-3 {
+            bottom: 10%;
+            left: 20%;
+            width: 80px;
+            height: 80px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                width: 90%;
+                padding: 30px 20px;
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="logo">
-        <img src="erasebg-transformed.png" alt="Price My Ride Logo">
+    <!-- Animated Background -->
+    <ul class="particles">
+        <li></li><li></li><li></li><li></li><li></li>
+        <li></li><li></li><li></li><li></li><li></li>
+    </ul>
+
+    <!-- Floating Shapes -->
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
     </div>
+
     <div class="container">
-        <h2 id="form-title">Login</h2>
-        <input type="email" id="email" placeholder="Email" required>
-        <div class="input-container">
-            <input type="password" id="password" placeholder="Password" required>
-            <span class="eye-icon" onclick="togglePassword()">👁️</span>
+        <div class="logo">
+            <div class="logo-img">
+                <i class="fas fa-car"></i>
+            </div>
+            <h2>Price My Ride</h2>
         </div>
+
+        <h2 id="form-title">Login</h2>
+        
+        <div class="input-group">
+            <input type="email" id="email" placeholder="Email Address" required>
+            <i class="fas fa-envelope input-icon"></i>
+        </div>
+        
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Password" required>
+            <i class="fas fa-lock input-icon"></i>
+            <span class="password-toggle" onclick="togglePassword()">
+                <i class="fas fa-eye"></i>
+            </span>
+        </div>
+        
         <button id="submit-btn" onclick="submitForm()">Login</button>
+        
         <p id="message"></p>
-        <p>
+        
+        <p class="toggle-text">
             <span id="toggle-text">Don't have an account?</span> 
             <span class="toggle" onclick="toggleForm()">Register</span>
         </p>
     </div>
 
     <script>
+        // Initialize users in localStorage if not exists
+        if (!localStorage.getItem('users')) {
+            localStorage.setItem('users', JSON.stringify([]));
+        }
+
         let isLogin = true;
 
         function toggleForm() {
@@ -101,56 +426,74 @@
             document.getElementById('form-title').textContent = isLogin ? 'Login' : 'Register';
             document.getElementById('submit-btn').textContent = isLogin ? 'Login' : 'Register';
             document.getElementById('toggle-text').textContent = isLogin ? "Don't have an account?" : "Already have an account?";
+            
+            // Add animation
+            document.getElementById('form-title').style.animation = 'none';
+            setTimeout(() => {
+                document.getElementById('form-title').style.animation = 'fadeIn 0.5s ease-out';
+            }, 10);
         }
 
         function togglePassword() {
             const passwordField = document.getElementById('password');
-            passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
+            const icon = document.querySelector('.password-toggle i');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
         }
 
-        async function submitForm() {
+        function submitForm() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const messageElement = document.getElementById('message');
 
             if (!email || !password) {
                 messageElement.textContent = 'Please enter email and password';
+                messageElement.style.color = '#ff6b6b';
                 return;
             }
 
-            const url = isLogin ? '/login' : '/register';
-            const successMessage = isLogin ? 'Login successful!' : 'Registration successful! Please login.';
+            const users = JSON.parse(localStorage.getItem('users')) || [];
 
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    messageElement.textContent = successMessage;
-                    messageElement.style.color = 'green';
-                    
-                    if (isLogin) {
-                        localStorage.setItem('token', data.token);
-                        setTimeout(() => {
-                            window.location.href = '/dashboard'; // Redirect to dashboard
-                        }, 1000);
-                    } else {
-                        toggleForm(); // Switch to login after registration
-                    }
+            if (isLogin) {
+                // Login
+                const user = users.find(u => u.email === email && u.password === password);
+                if (user) {
+                    messageElement.textContent = 'Login successful!';
+                    messageElement.style.color = '#00ff88';
+                    localStorage.setItem('token', 'demo-token-' + Date.now());
+                    localStorage.setItem('userEmail', email);
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 1000);
                 } else {
-                    messageElement.textContent = data.message;
-                    messageElement.style.color = 'red';
+                    messageElement.textContent = 'Invalid email or password';
+                    messageElement.style.color = '#ff6b6b';
                 }
-            } catch (error) {
-                messageElement.textContent = 'Error connecting to server';
-                messageElement.style.color = 'red';
-                console.error('Fetch error:', error);
+            } else {
+                // Register
+                const existingUser = users.find(u => u.email === email);
+                if (existingUser) {
+                    messageElement.textContent = 'User already exists';
+                    messageElement.style.color = '#ff6b6b';
+                } else {
+                    users.push({ email, password });
+                    localStorage.setItem('users', JSON.stringify(users));
+                    messageElement.textContent = 'Registration successful! Please login.';
+                    messageElement.style.color = '#00ff88';
+                    setTimeout(() => {
+                        toggleForm();
+                    }, 1500);
+                }
             }
         }
     </script>
 </body>
 </html>
+

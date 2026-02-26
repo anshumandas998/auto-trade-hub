@@ -1,35 +1,29 @@
 const express = require('express');
-const mysql = require('mysql');
 const path = require('path');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const http = require('http');
 
 const app = express();
 const PORT = 3018;
-const SECRET_KEY = 'your-secret-key'; // Change this to a secure secret key
+const SECRET_KEY = 'your-secret-key';
 
-// ✅ Database Connection
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '200518',
-    database: 'userdetails'
-});
+// Python API URL for predictions
+const PYTHON_API_URL = 'http://localhost:5000';
 
-db.connect(err => {
-    if (err) {
-        console.error('❌ Database connection failed:', err);
-    } else {
-        console.log('✅ Database connected successfully');
-    }
-});
+// In-memory user storage (for demo purposes - uses localStorage on frontend)
+// This replaces MySQL database
 
 // ✅ Serve static files from 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json()); // Middleware for JSON body parsing
 
-// ✅ Serve Login Page
+// ✅ Serve Landing Page (Home)
 app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// ✅ Serve Login Page
+app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
@@ -38,34 +32,40 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
+// Simple hash function (not secure, for demo only)
+function simpleHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+    }
+    return hash.toString();
+}
+
 // ✅ Register Route
-app.post('/register', async (req, res) => {
+app.post('/register', (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
         return res.status(400).json({ message: 'Email and Password are required' });
     }
 
+    // Get users from header or use default
+    const users = JSON.parse(req.headers['x-users'] || '[]');
+    
     // Check if user already exists
-    const checkUser = 'SELECT * FROM users WHERE email = ?';
-    db.query(checkUser, [email], async (err, results) => {
-        if (err) {
-            return res.status(500).json({ message: 'Server error' });
-        }
+    const existingUser = users.find(u => u.email === email);
+    if (existingUser) {
+        return res.status(400).json({ message: 'User already exists' });
+    }
 
-        if (results.length > 0) {
-            return res.status(400).json({ message: 'User already exists' });
-        }
-
-        // Hash password before storing
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const sql = 'INSERT INTO users (email, password) VALUES (?, ?)';
-        db.query(sql, [email, hashedPassword], (err) => {
-            if (err) {
-                return res.status(500).json({ message: 'Error registering user' });
-            }
-            res.json({ message: 'Registration successful' });
-        });
-    });
+    // Simple password hashing (for demo purposes)
+    const hashedPassword = simpleHash(password);
+    
+    // Add new user
+    users.push({ email, password: hashedPassword });
+    
+    res.json({ message: 'Registration successful', users });
 });
 
 // ✅ Login Route
@@ -75,31 +75,108 @@ app.post('/login', (req, res) => {
         return res.status(400).json({ message: 'Email and Password are required' });
     }
 
-    const sql = 'SELECT * FROM users WHERE email = ?';
-    db.query(sql, [email], async (err, results) => {
-        if (err) {
-            return res.status(500).json({ message: 'Server error' });
-        }
+    // Get users from header or use default
+    const users = JSON.parse(req.headers['x-users'] || '[]');
+    
+    // Find user
+    const hashedPassword = simpleHash(password);
+    const user = users.find(u => u.email === email && u.password === hashedPassword);
+    
+    if (!user) {
+        return res.status(401).json({ message: 'Invalid credentials' });
+    }
 
-        if (results.length === 0) {
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
+    // Generate JWT token
+    const token = jwt.sign({ email: user.email }, SECRET_KEY, { expiresIn: '1h' });
 
-        // Compare hashed password
-        const user = results[0];
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
+    res.json({ message: 'Login successful', token });
+});
 
-        // Generate JWT token
-        const token = jwt.sign({ email: user.email }, SECRET_KEY, { expiresIn: '1h' });
+// ✅ Car Price Prediction Route - Proxy to Python API
+app.post('/predict', async (req, res) => {
+    try {
+        const predictionData = req.body;
+        
+        // Forward request to Python API
+        const data = JSON.stringify(predictionData);
+        
+        const options = {
+            hostname: 'localhost',
+            port: 5000,
+            path: '/predict',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': data.length
+            }
+        };
 
-        res.json({ message: 'Login successful', token });
+        const pythonReq = http.request(options, (pythonRes) => {
+            let responseData = '';
+            
+            pythonRes.on('data', (chunk) => {
+                responseData += chunk;
+            });
+            
+            pythonRes.on('end', () => {
+                try {
+                    const result = JSON.parse(responseData);
+                    res.status(pythonRes.statusCode).json(result);
+                } catch (e) {
+                    res.status(500).json({ error: 'Failed to parse prediction response' });
+                }
+            });
+        });
+
+        pythonReq.on('error', (error) => {
+            console.error('Python API error:', error.message);
+            res.status(500).json({ error: 'Prediction service unavailable. Make sure the Python API is running.' });
+        });
+
+        pythonReq.write(data);
+        pythonReq.end();
+        
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ✅ Health check for prediction service
+app.get('/predict/health', (req, res) => {
+    const options = {
+        hostname: 'localhost',
+        port: 5000,
+        path: '/health',
+        method: 'GET'
+    };
+
+    const pythonReq = http.request(options, (pythonRes) => {
+        let responseData = '';
+        
+        pythonRes.on('data', (chunk) => {
+            responseData += chunk;
+        });
+        
+        pythonRes.on('end', () => {
+            try {
+                const result = JSON.parse(responseData);
+                res.json(result);
+            } catch (e) {
+                res.status(500).json({ status: 'error', message: 'Failed to parse response' });
+            }
+        });
     });
+
+    pythonReq.on('error', () => {
+        res.status(503).json({ status: 'unavailable', message: 'Prediction service is not running' });
+    });
+
+    pythonReq.end();
 });
 
 // ✅ Start Server
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log('✅ Using in-memory storage (no MySQL required)');
 });
+
