@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/register", "destination": "/api" },
+    { "source": "/forgot-password", "destination": "/api" },
+    { "source": "/predict(.*)", "destination": "/api" },
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/", "destination": "/index.html" }
+  ]
+}

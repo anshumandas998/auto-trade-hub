@@ -4,7 +4,13 @@
   "description": "Car Trade Management System",
   "scripts": {
     "start": "npm --prefix \"price my car\" start",
-    "dev": "npm --prefix \"price my car\" run dev"
+    "dev": "npm --prefix \"price my car\" run dev",
+    "build": "echo 'Build ready'"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2"
   },
   "keywords": [],
   "author": "",
