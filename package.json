@@ -1,0 +1,12 @@
+{
+  "name": "auto-trade-hub",
+  "version": "1.0.0",
+  "description": "Car Trade Management System",
+  "scripts": {
+    "start": "npm --prefix \"price my car\" start",
+    "dev": "npm --prefix \"price my car\" run dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
